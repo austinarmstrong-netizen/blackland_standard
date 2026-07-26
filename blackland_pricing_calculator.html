@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackland Standard - Pricing Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 16px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 16px;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            color: #2c2c2c;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        
+        header p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            font-size: 18px;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .currency {
+            font-size: 14px;
+            color: #999;
+            font-weight: 500;
+        }
+        
+        input[type="number"],
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.1);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .margin-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .margin-btn {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #666;
+        }
+        
+        .margin-btn:hover {
+            border-color: #333;
+            background: #f9f9f9;
+        }
+        
+        .margin-btn.active {
+            background: #2c2c2c;
+            color: white;
+            border-color: #2c2c2c;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        
+        .result-card {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .result-card.highlight {
+            background: #2c2c2c;
+            border-color: #2c2c2c;
+            color: white;
+        }
+        
+        .result-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        .result-card.highlight .result-label {
+            color: #ccc;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c2c2c;
+        }
+        
+        .result-card.highlight .result-value {
+            color: white;
+        }
+        
+        .custom-margin {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .custom-margin label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+            display: block;
+            font-weight: 500;
+        }
+        
+        .custom-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .custom-input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .custom-input-group input:focus {
+            outline: none;
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.1);
+        }
+        
+        .custom-result {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f0f8f0;
+            border: 1px solid #d0e8d0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .custom-result-label {
+            font-size: 12px;
+            color: #4a7c4a;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        .custom-result-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c6e2c;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #0086b3;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        
+        .info-box p {
+            font-size: 13px;
+            color: #0086b3;
+            line-height: 1.6;
+        }
+        
+        .reset-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        
+        .reset-btn:hover {
+            background: #e0e0e0;
+            border-color: #999;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Blackland Standard</h1>
+            <p>Pricing Calculator</p>
+        </header>
+        
+        <div class="card">
+            <h2>Hard Costs</h2>
+            <div class="grid-2">
+                <div class="input-group">
+                    <label for="materials">Materials Cost</label>
+                    <div class="input-wrapper">
+                        <span class="currency">$</span>
+                        <input type="number" id="materials" value="2.82" step="0.01" min="0">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="minutes">Labor Time (minutes)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="minutes" value="20" step="1" min="0">
+                        <span class="currency" style="flex: 0;">min</span>
+                    </div>
+                    <div style="font-size: 12px; color: #999; margin-top: 6px;">@ $20/hour</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="brands">Number of Brands</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="brands" value="1" step="1" min="1">
+                        <span class="currency" style="flex: 0;">x $0.50</span>
+                    </div>
+                    <div style="font-size: 12px; color: #999; margin-top: 6px;">= <span id="brandsCost">$0.50</span></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="productName">Product Name (optional)</label>
+                    <input type="text" id="productName" placeholder="e.g., Boot Bows">
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>Total Hard Cost: $<span id="totalCost">9.49</span></strong></p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Pricing by Margin Target</h2>
+            
+            <div id="standardResults" class="results"></div>
+            
+            <div class="custom-margin">
+                <label for="customMargin">Custom Margin %</label>
+                <div class="custom-input-group">
+                    <input type="number" id="customMargin" value="40" step="1" min="0" max="100" placeholder="Enter margin %">
+                    <button onclick="calculateCustomMargin()" style="padding: 10px 24px; background: #2c2c2c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Calculate</button>
+                </div>
+                <div id="customResult" class="custom-result" style="display: none;">
+                    <div class="custom-result-label" id="customLabel">40% Margin</div>
+                    <div class="custom-result-value" id="customPrice">$15.82</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="reset-btn" onclick="resetCalculator()">Reset to Defaults</button>
+        
+        <footer>
+            <p>Blackland Standard Pricing Calculator | Save this page for offline use</p>
+        </footer>
+    </div>
+    
+    <script>
+        function updateCalculations() {
+            const materials = parseFloat(document.getElementById('materials').value) || 0;
+            const minutes = parseFloat(document.getElementById('minutes').value) || 0;
+            const brands = parseFloat(document.getElementById('brands').value) || 1;
+            
+            const laborCost = (minutes / 60) * 20;
+            const brandsCost = brands * 0.50;
+            const totalCost = materials + laborCost + brandsCost;
+            
+            document.getElementById('totalCost').textContent = totalCost.toFixed(2);
+            document.getElementById('brandsCost').textContent = '$' + brandsCost.toFixed(2);
+            
+            renderStandardResults(totalCost);
+            calculateCustomMargin();
+        }
+        
+        function renderStandardResults(cost) {
+            const margins = [30, 35, 40, 45, 50];
+            const resultsDiv = document.getElementById('standardResults');
+            resultsDiv.innerHTML = '';
+            
+            margins.forEach(margin => {
+                const sellingPrice = cost / (1 - margin / 100);
+                const profit = sellingPrice - cost;
+                
+                const card = document.createElement('div');
+                card.className = 'result-card' + (margin === 40 ? ' highlight' : '');
+                card.innerHTML = `
+                    <div class="result-label">${margin}% MARGIN</div>
+                    <div class="result-value">$${sellingPrice.toFixed(2)}</div>
+                    <div style="font-size: 12px; color: #999; margin-top: 4px;">profit: $${profit.toFixed(2)}</div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+
+
+        
+        function calculateCustomMargin() {
+            const materials = parseFloat(document.getElementById('materials').value) || 0;
+            const minutes = parseFloat(document.getElementById('minutes').value) || 0;
+            const brands = parseFloat(document.getElementById('brands').value) || 1;
+            
+            const laborCost = (minutes / 60) * 20;
+            const brandsCost = brands * 0.50;
+            const totalCost = materials + laborCost + brandsCost;
+            const margin = parseFloat(document.getElementById('customMargin').value) || 0;
+            
+            if (margin >= 100) {
+                document.getElementById('customResult').style.display = 'none';
+                return;
+            }
+            
+            const sellingPrice = totalCost / (1 - margin / 100);
+            const profit = sellingPrice - totalCost;
+            
+            document.getElementById('customLabel').textContent = margin + '% Margin';
+            document.getElementById('customPrice').textContent = '$' + sellingPrice.toFixed(2);
+            document.getElementById('customResult').style.display = 'block';
+            
+            // Show profit breakdown
+            let profitDisplay = document.getElementById('customResult').querySelector('div:last-child');
+            if (profitDisplay && profitDisplay.style.marginTop === '12px') {
+                profitDisplay.remove();
+            }
+            
+            profitDisplay = document.createElement('div');
+            profitDisplay.style.cssText = 'margin-top: 12px; font-size: 12px; color: #666;';
+            profitDisplay.innerHTML = `Selling Price: $${sellingPrice.toFixed(2)} | Profit: $${profit.toFixed(2)}`;
+            
+            document.getElementById('customResult').appendChild(profitDisplay);
+        }
+        
+        function resetCalculator() {
+            document.getElementById('materials').value = '2.82';
+            document.getElementById('minutes').value = '20';
+            document.getElementById('brands').value = '1';
+            document.getElementById('productName').value = '';
+            document.getElementById('customMargin').value = '40';
+            
+            updateCalculations();
+            calculateCustomMargin();
+        }
+        
+        // Event listeners
+        document.getElementById('materials').addEventListener('input', updateCalculations);
+        document.getElementById('minutes').addEventListener('input', updateCalculations);
+        document.getElementById('brands').addEventListener('input', updateCalculations);
+        document.getElementById('customMargin').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculateCustomMargin();
+        });
+        document.getElementById('customMargin').addEventListener('input', calculateCustomMargin);
+        
+        // Initialize
+        updateCalculations();
+        calculateCustomMargin();
+    </script>
+</body>
+</html>
