@@ -331,6 +331,8 @@
         <div class="card">
             <h2>Pricing by Margin Target</h2>
             
+            <div id="standardResults" class="results"></div>
+            
             <div class="custom-margin">
                 <label for="customMargin">Custom Margin %</label>
                 <div class="custom-input-group">
@@ -363,6 +365,29 @@
             
             document.getElementById('totalCost').textContent = totalCost.toFixed(2);
             document.getElementById('brandsCost').textContent = '$' + brandsCost.toFixed(2);
+            
+            renderStandardResults(totalCost);
+            calculateCustomMargin();
+        }
+        
+        function renderStandardResults(cost) {
+            const margins = [30, 35, 40, 45, 50];
+            const resultsDiv = document.getElementById('standardResults');
+            resultsDiv.innerHTML = '';
+            
+            margins.forEach(margin => {
+                const sellingPrice = cost / (1 - margin / 100);
+                const profit = sellingPrice - cost;
+                
+                const card = document.createElement('div');
+                card.className = 'result-card' + (margin === 40 ? ' highlight' : '');
+                card.innerHTML = `
+                    <div class="result-label">${margin}% MARGIN</div>
+                    <div class="result-value">$${sellingPrice.toFixed(2)}</div>
+                    <div style="font-size: 12px; color: #999; margin-top: 4px;">profit: $${profit.toFixed(2)}</div>
+                `;
+                resultsDiv.appendChild(card);
+            });
         }
 
 
@@ -424,6 +449,7 @@
         
         // Initialize
         updateCalculations();
+        calculateCustomMargin();
     </script>
 </body>
 </html>
